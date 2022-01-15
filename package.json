@@ -20,7 +20,8 @@
     "react-query": "^3.34.8",
     "react-scripts": "5.0.0",
     "typescript": "^4.5.4",
-    "web-vitals": "^2.1.3"
+    "web-vitals": "^2.1.3",
+    "winston": "^3.4.0"
   },
   "scripts": {
     "nvm": ". ~/.nvm/nvm.sh && nvm use",
@@ -41,8 +42,8 @@
     "hooks": {
       "pre-commit": "lint-staged",
       "prepare-commit-msg": "bash node_modules/conventional-pre-commits/scripts/update_version.sh -p .ccommitsrc ${HUSKY_GIT_PARAMS}",
-      "post-commit": "bash node_modules/conventional-pre-commits/scripts/after_version_update.sh",
-      "post-merge": "bash node_modules/conventional-pre-commits/scripts/after_version_update.sh"
+      "post-commit": "bash node_modules/conventional-pre-commits/scripts/after_version_update.sh -p .ccommitsrc",
+      "post-merge": "bash node_modules/conventional-pre-commits/scripts/after_version_update.sh -p .ccommitsrc"
     }
   },
   "lint-staged": {

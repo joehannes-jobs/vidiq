@@ -1,8 +1,21 @@
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import winston from 'winston';
 
 const queryClient = new QueryClient();
+const logger = winston.createLogger({
+  level: 'info',
+  format: winston.format.combine(
+    winston.format.colorize(),
+    winston.format.json()
+  ),
+  transports: [
+    new winston.transports.Console({
+      format: winston.format.simple(),
+    }),
+  ],
+});
 
 /**
  * [App is the main component of the application]
@@ -21,5 +34,9 @@ function App() {
     </QueryClientProvider>
   );
 }
+
+setLogger(logger);
+
+export { logger };
 
 export default App;
