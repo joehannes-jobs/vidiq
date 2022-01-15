@@ -2,6 +2,11 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 
+/**
+ * [App is the main component of the application]
+ *
+ * @return {[Element]} [the rendered jsx element]
+ */
 function App() {
   return (
     <div className="App">
