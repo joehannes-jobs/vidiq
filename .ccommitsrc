@@ -1,0 +1,10 @@
+main_branch='main'
+branches='development|release|main'
+git_flow_from='development'
+git_flow_to='development|main'
+fix_branches='bugfix|hotfix'
+enforce_conventional_commits=true
+commit_types='build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test'
+minor_version_types='build|feat|revert'
+patch_version_types='chore|fix|perf|refactor'
+breaking_changes=true
