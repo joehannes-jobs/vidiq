@@ -5,7 +5,7 @@
   "description": "vidiq interview challenge",
   "author": "joehannes",
   "engines": {
-    "node": ">=17.3.2"
+    "node": ">=16.13.2"
   },
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.1",
@@ -22,13 +22,18 @@
     "web-vitals": "^2.1.3"
   },
   "scripts": {
+    "nvm": ". ~/.nvm/nvm.sh && nvm use",
+    "prestart": "npm run nvm",
     "start": "react-scripts start",
     "lint:ts": "prettier --check '**/*.{ts,tsx}'",
     "lint:css": "stylelint 'src/*.tsx' --fix",
     "lint": "npm run lint:ts && npm run lint:css",
+    "prebuild": "npm run nvm",
     "build": "npm run lint && react-scripts build",
+    "pretest": "npm run nvm",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
+    "preinstall": ". ~/.nvm/nvm.sh && nvm install v16.13.2 && nvm use",
     "prepare": "husky install"
   },
   "husky": {
