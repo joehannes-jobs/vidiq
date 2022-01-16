@@ -1,22 +1,9 @@
 import React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import winston from 'winston';
-import GlobalStyle from './App';
+import GlobalStyle from './styles';
 
 const queryClient = new QueryClient();
-const logger = winston.createLogger({
-  level: 'info',
-  format: winston.format.combine(
-    winston.format.colorize(),
-    winston.format.json()
-  ),
-  transports: [
-    new winston.transports.Console({
-      format: winston.format.simple(),
-    }),
-  ],
-});
 
 /**
  * [App is the main component of the application]
@@ -29,16 +16,12 @@ function App() {
       <ReactQueryDevtools initialIsOpen={true} />
       <GlobalStyle />
       <div className="App">
-        <header className="App-header">
+        <header className="text-3xl font-bold underline">
           <p>Hello VidIQ!</p>
         </header>
       </div>
     </QueryClientProvider>
   );
 }
-
-setLogger(logger);
-
-export { logger };
 
 export default App;
