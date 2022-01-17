@@ -8,9 +8,9 @@ const queryClient = new QueryClient();
 /**
  * [App is the main component of the application]
  *
- * @return {[Element]} [the rendered jsx element]
+ * @return {[JSX.Element]} [the rendered jsx element]
  */
-function App() {
+function App(): JSX.Element {
   return (
     <QueryClientProvider client={queryClient}>
       <ReactQueryDevtools initialIsOpen={true} />
