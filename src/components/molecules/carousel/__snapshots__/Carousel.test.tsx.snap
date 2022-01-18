@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Carousel should render initial Layout 1`] = `
+Array [
+  <section
+    className="w-auto h-screen
+                  carousel carousel-center
+                  portrait:carousel-vertical
+                  landscape:md:carousel-vertical"
+  >
+    Loading images...
+  </section>,
+]
+`;

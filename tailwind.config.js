@@ -3,5 +3,13 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/typography'), require('daisyui')],
+  daisyui: {
+    styled: true,
+    themes: ['aqua'],
+    base: true,
+    utils: true,
+    logs: true,
+    rtl: false,
+  },
 };
