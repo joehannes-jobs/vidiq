@@ -13,7 +13,7 @@ jest.setTimeout(21000);
 describe('Carousel', () => {
   let fullyRenderedComponent: any;
   let shallowRenderedComponent: any;
-  let scope: any = nock(ImageAPIBaseUrl)
+  const scope: any = nock(ImageAPIBaseUrl)
     .defaultReplyHeaders({
       'access-control-allow-origin': '*',
       'access-control-allow-credentials': 'true',
