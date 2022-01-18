@@ -8,6 +8,8 @@
     "node": ">=16.13.2"
   },
   "dependencies": {
+    "axios": "^0.25.0",
+    "daisyui": "^1.23.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-query": "^3.34.8",
@@ -43,7 +45,7 @@
       "prettier --write",
       "npm run lint",
       "git update-index --again",
-      "jest --findRelatedTests"
+      "npm run test"
     ],
     "*.tsx": [
       "prettier --write",
@@ -64,12 +66,16 @@
     ]
   },
   "devDependencies": {
+    "@tailwindcss/typography": "^0.5.0",
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/react": "^12.1.2",
+    "@testing-library/user-event": "^13.5.0",
     "@types/enzyme": "^3.10.11",
     "@types/jest": "^27.4.0",
     "@types/node": "^16.11.19",
-    "@types/styled-components": "^5.1.20",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
+    "@types/styled-components": "^5.1.20",
     "@typescript-eslint/eslint-plugin": "^5.9.1",
     "@typescript-eslint/parser": "^5.9.1",
     "@wojtekmaj/enzyme-adapter-react-17": "^0.6.6",
@@ -82,13 +88,11 @@
     "eslint-plugin-react": "^7.28.0",
     "husky": "^7.0.4",
     "lint-staged": "^12.1.7",
+    "nock": "^13.2.2",
     "postcss": "^8.4.5",
     "prettier": "^2.5.1",
     "react-scripts": "^5.0.0",
     "react-test-renderer": "^17.0.2",
-    "@testing-library/jest-dom": "^5.16.1",
-    "@testing-library/react": "^12.1.2",
-    "@testing-library/user-event": "^13.5.0",
     "stylelint": "^14.2.0",
     "stylelint-config-recommended": "^6.0.0",
     "stylelint-config-styled-components": "^0.1.1",
