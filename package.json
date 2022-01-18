@@ -45,7 +45,7 @@
       "prettier --write",
       "npm run lint",
       "git update-index --again",
-      "jest --findRelatedTests"
+      "npm run test"
     ],
     "*.tsx": [
       "prettier --write",
