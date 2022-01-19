@@ -15,7 +15,7 @@ const queryClient = new QueryClient();
 function App(): JSX.Element {
   return (
     <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={true} />
+      <ReactQueryDevtools initialIsOpen={false} />
       <GlobalStyle />
       <main className="App">
         <header className="text-3xl font-bold underline">

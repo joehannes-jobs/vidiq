@@ -1,11 +1,12 @@
-import React, {
-  useState,
-  useEffect,
-  useCallback,
-  PropsWithChildren,
-} from 'react';
-import CarouselImage from './CarouselImage';
 import axios from 'axios';
+import React, {
+  PropsWithChildren,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
+import { useDebounce, useIntersectionObserverRef } from 'rooks';
+import CarouselImage from './CarouselImage';
 
 export interface ImageDataset {
   albumId: number;
@@ -16,7 +17,7 @@ export interface ImageDataset {
   favorite?: boolean;
 }
 
-export const ImageAPIBaseUrl = 'http://jsonplaceholder.typicode.com';
+export const ImageAPIBaseUrl = 'https://jsonplaceholder.typicode.com';
 
 export interface CarouselProps {
   data?: ImageDataset[];
@@ -25,18 +26,30 @@ export interface CarouselProps {
 const Carousel: React.FC<CarouselProps> = ({
   data: imgData,
 }: PropsWithChildren<CarouselProps>): JSX.Element => {
+  let renderedIntersectionRefElement = false;
+  const [triggerFetchImages, setTriggerFetchImages] = useState(true);
   const [jsonImgData, setJsonImgData] = useState(imgData ?? []);
+  const onTriggerFetchImages = useDebounce(setTriggerFetchImages, 500);
+
+  const onGalleryScrollBottomProximity = (
+    entries: IntersectionObserverEntry[]
+  ) => {
+    console.log(entries[0].isIntersecting);
+    if (entries[0].isIntersecting) {
+      onTriggerFetchImages(true);
+    }
+  };
 
   const fetchImgData = useCallback(async () => {
     let httpStatus: number;
 
     try {
       const { data, status, statusText } = await axios.get(
-        `${ImageAPIBaseUrl}/photos`
+        `${ImageAPIBaseUrl}/photos?_start=${jsonImgData.length}&_limit=50`
       );
       httpStatus = status;
       if (status === 200) {
-        setJsonImgData(data);
+        setJsonImgData([...jsonImgData, ...data]);
       } else {
         console.warn(`http status diverging from 200: ${status}`);
         console.log(`status: ${status}`);
@@ -52,12 +65,19 @@ const Carousel: React.FC<CarouselProps> = ({
           // @ts-ignore
         }: ${httpStatus}`
       );
+      setTriggerFetchImages(false);
     }
-  }, []);
+  }, [triggerFetchImages]);
+
+  const [intersectingElementRef] = useIntersectionObserverRef(
+    onGalleryScrollBottomProximity
+  );
 
   useEffect(() => {
-    fetchImgData();
-  }, []);
+    if (triggerFetchImages) {
+      fetchImgData();
+    }
+  }, [triggerFetchImages]);
 
   return (
     <section
@@ -72,8 +92,14 @@ const Carousel: React.FC<CarouselProps> = ({
             .map((dataset: ImageDataset, i: number) => (
               <CarouselImage
                 key={`album-${dataset.albumId}-img-${dataset.id}`}
-                albumId={dataset.albumId}
-                id={dataset.id}
+                ref={
+                  !renderedIntersectionRefElement && jsonImgData.length - i < 21
+                    ? (() => {
+                        renderedIntersectionRefElement = true;
+                        return intersectingElementRef;
+                      })()
+                    : null
+                }
                 title={dataset.title}
                 thumbnailUrl={dataset.thumbnailUrl}
               />
