@@ -54,8 +54,6 @@ describe('Carousel', () => {
             ImageData.slice(0, 10).map(dataset => (
               <CarouselImage
                 key={`album-${dataset.albumId}-img-${dataset.id}`}
-                albumId={dataset.albumId}
-                id={dataset.id}
                 title={dataset.title}
                 thumbnailUrl={dataset.thumbnailUrl}
               />
