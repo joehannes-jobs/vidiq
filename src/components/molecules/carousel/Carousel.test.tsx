@@ -3,9 +3,11 @@ import nock from 'nock';
 import { shallow, mount } from 'enzyme';
 import { waitFor } from '@testing-library/react';
 
-import Carousel, { ImageAPIBaseUrl } from '.';
+import { Component as Carousel, API } from '.';
 import CarouselImage from './CarouselImage';
 import ImageData from './stub.json';
+
+const ImageAPIBaseUrl = API.BASE_URL;
 
 // increase timeout: the big .json test is taking some time
 jest.setTimeout(21000);
@@ -56,6 +58,7 @@ describe('Carousel', () => {
                 key={`album-${dataset.albumId}-img-${dataset.id}`}
                 title={dataset.title}
                 thumbnailUrl={dataset.thumbnailUrl}
+                onClick={jest.fn}
               />
             ))
           )
