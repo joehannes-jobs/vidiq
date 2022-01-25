@@ -2,13 +2,15 @@ import axios from 'axios';
 import React, {
   PropsWithChildren,
   useCallback,
+  useContext,
   useEffect,
   useState,
 } from 'react';
 import { useDebounce, useIntersectionObserverRef } from 'rooks';
 import CarouselImage from './CarouselImage';
+import { Instance as CurrentImageContext } from './Context';
 
-export interface ImageDataset {
+interface ImageDataset {
   albumId: number;
   id: number;
   title: string;
@@ -17,24 +19,27 @@ export interface ImageDataset {
   favorite?: boolean;
 }
 
-export const ImageAPIBaseUrl = 'https://jsonplaceholder.typicode.com';
+export const API = {
+  BASE_URL: 'https://jsonplaceholder.typicode.com',
+};
 
-export interface CarouselProps {
+interface IProps {
   data?: ImageDataset[];
 }
 
-const Carousel: React.FC<CarouselProps> = ({
+const Carousel: React.FC<IProps> = ({
   data: imgData,
-}: PropsWithChildren<CarouselProps>): JSX.Element => {
+}: PropsWithChildren<IProps>) => {
   let renderedIntersectionRefElement = false;
   const [triggerFetchImages, setTriggerFetchImages] = useState(true);
   const [jsonImgData, setJsonImgData] = useState(imgData ?? []);
+  const [, setCurrentImageContext] = useContext(CurrentImageContext);
+
   const onTriggerFetchImages = useDebounce(setTriggerFetchImages, 500);
 
   const onGalleryScrollBottomProximity = (
     entries: IntersectionObserverEntry[]
   ) => {
-    console.log(entries[0].isIntersecting);
     if (entries[0].isIntersecting) {
       onTriggerFetchImages(true);
     }
@@ -45,7 +50,7 @@ const Carousel: React.FC<CarouselProps> = ({
 
     try {
       const { data, status, statusText } = await axios.get(
-        `${ImageAPIBaseUrl}/photos?_start=${jsonImgData.length}&_limit=50`
+        `${API.BASE_URL}/photos?_start=${jsonImgData.length}&_limit=50`
       );
       httpStatus = status;
       if (status === 200) {
@@ -82,9 +87,7 @@ const Carousel: React.FC<CarouselProps> = ({
   return (
     <section
       className={`w-auto h-screen
-                  carousel carousel-center
-                  portrait:carousel-vertical
-                  landscape:md:carousel-vertical`}
+                  carousel carousel-center carousel-vertical`}
     >
       {jsonImgData.length
         ? jsonImgData
@@ -99,6 +102,12 @@ const Carousel: React.FC<CarouselProps> = ({
                         return intersectingElementRef;
                       })()
                     : null
+                }
+                onClick={() =>
+                  setCurrentImageContext({
+                    currentImgSrc: dataset.url,
+                    currentImgTitle: dataset.title,
+                  })
                 }
                 title={dataset.title}
                 thumbnailUrl={dataset.thumbnailUrl}

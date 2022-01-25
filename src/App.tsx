@@ -1,8 +1,7 @@
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-
-import { Carousel } from './components/molecules';
+import { DrawerGallery } from './components/pages';
 import GlobalStyle from './styles';
 
 const queryClient = new QueryClient();
@@ -12,19 +11,12 @@ const queryClient = new QueryClient();
  *
  * @return {[JSX.Element]} [the rendered jsx element]
  */
-function App(): JSX.Element {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools initialIsOpen={false} />
-      <GlobalStyle />
-      <main className="App">
-        <header className="text-3xl font-bold underline">
-          <p>Hello VidIQ!</p>
-        </header>
-        <Carousel />
-      </main>
-    </QueryClientProvider>
-  );
-}
+const App: React.FC<{}> = () => (
+  <QueryClientProvider client={queryClient}>
+    <ReactQueryDevtools initialIsOpen={false} />
+    <GlobalStyle />
+    <DrawerGallery />
+  </QueryClientProvider>
+);
 
 export default App;
