@@ -1,11 +1,36 @@
-import React, { useContext } from 'react';
-
+import React, { useContext, useState } from 'react';
+import { useQueryClient } from 'react-query';
 import { Instance as Context } from './Context';
+import { ImageDataset } from './DataSchema';
 
 const Aside: React.FC = () => {
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [{ currentImgSrc: src, currentImgTitle: title }, setImg] =
     useContext(Context);
-  const isFavorite = false;
+  const queryClient = useQueryClient();
+
+  const handleFavorite = () => {
+    const isFav = !isFavorite;
+
+    setIsFavorite(isFav);
+    queryClient.setQueryData<ImageDataset[]>(
+      'images',
+      (jsonImgData: ImageDataset[] | undefined) => {
+        const newData = jsonImgData?.map(img => {
+          if (img.url === src) {
+            return {
+              ...img,
+              isFavorite: isFav,
+            };
+          }
+          return img;
+        });
+
+        return newData as ImageDataset[];
+      }
+    );
+  };
+
   return (
     <div className="flex items-center justify-center h-full w-full px-4 py-10 card">
       <div
@@ -26,9 +51,10 @@ const Aside: React.FC = () => {
           </h2>
           <div className="card-actions justify-self-start justify-center items-center h-full !landscape:-mt-8">
             <button
-              className={`btn glass rounded-full text-7xl ${
+              className={`btn glass ro ttunded-full text-7xl ${
                 isFavorite ? 'text-orange-500' : 'text-black'
               } h-auto p-5`}
+              onClick={handleFavorite}
             >
               {isFavorite ? '⭐' : '☆'}
             </button>
