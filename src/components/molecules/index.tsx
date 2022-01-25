@@ -1,1 +1,1 @@
-export * as Carousel from './Carousel';
+export * as Carousel from './Carousel/index';

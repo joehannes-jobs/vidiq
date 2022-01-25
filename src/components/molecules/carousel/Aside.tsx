@@ -1,11 +1,39 @@
 import React, { useContext } from 'react';
-
+import { useQueryClient } from 'react-query';
 import { Instance as Context } from './Context';
+import { ImageDataset } from './DataSchema';
 
 const Aside: React.FC = () => {
-  const [{ currentImgSrc: src, currentImgTitle: title }, setImg] =
-    useContext(Context);
-  const isFavorite = false;
+  const [
+    { currentImgSrc: src, currentImgTitle: title, favorite: isFavorite },
+    setImg,
+  ] = useContext(Context);
+  const queryClient = useQueryClient();
+
+  const handleFavorite = () => {
+    setImg({
+      currentImgSrc: src,
+      currentImgTitle: title,
+      favorite: !isFavorite,
+    });
+    queryClient.setQueryData<ImageDataset[]>(
+      'images',
+      (jsonImgData: ImageDataset[] | undefined) => {
+        const newData = jsonImgData?.map(img => {
+          if (img.url === src) {
+            return {
+              ...img,
+              favorite: !img.favorite,
+            };
+          }
+          return img;
+        });
+
+        return newData as ImageDataset[];
+      }
+    );
+  };
+
   return (
     <div className="flex items-center justify-center h-full w-full px-4 py-10 card">
       <div
@@ -26,9 +54,10 @@ const Aside: React.FC = () => {
           </h2>
           <div className="card-actions justify-self-start justify-center items-center h-full !landscape:-mt-8">
             <button
-              className={`btn glass rounded-full text-7xl ${
+              className={`btn glass ro ttunded-full text-7xl ${
                 isFavorite ? 'text-orange-500' : 'text-black'
               } h-auto p-5`}
+              onClick={handleFavorite}
             >
               {isFavorite ? '⭐' : '☆'}
             </button>
@@ -36,7 +65,13 @@ const Aside: React.FC = () => {
           <div className="card-actions justify-self-start justify-center items-center h-full landscape:hidden">
             <button
               className={`btn glass rounded-full text-7xl text-black h-auto p-7`}
-              onClick={() => setImg({ currentImgSrc: '', currentImgTitle: '' })}
+              onClick={() =>
+                setImg({
+                  currentImgSrc: '',
+                  currentImgTitle: '',
+                  favorite: false,
+                })
+              }
             >
               ✖
             </button>
