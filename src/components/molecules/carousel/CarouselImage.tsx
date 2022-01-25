@@ -9,16 +9,21 @@ const Thumbnail = styled.div`
 export interface CarouselImageProps {
   title: string;
   thumbnailUrl: string;
+  onClick: () => void;
 }
 
 const CarouselImage: React.ForwardRefExoticComponent<
   CarouselImageProps & RefAttributes<HTMLDivElement>
 > = React.forwardRef<HTMLDivElement, CarouselImageProps>(
   (
-    { title, thumbnailUrl: url }: PropsWithRef<CarouselImageProps>,
-    ref: React.Ref<HTMLDivElement> = null
-  ): JSX.Element => (
-    <Thumbnail ref={ref ?? undefined} className={`carousel-item`}>
+    { onClick, title, thumbnailUrl: url }: PropsWithRef<CarouselImageProps>,
+    ref: React.Ref<HTMLDivElement>
+  ): React.ReactElement => (
+    <Thumbnail
+      ref={ref ?? undefined}
+      onClick={onClick}
+      className={`carousel-item cursor-pointer`}
+    >
       <img src={url} alt={title} />
     </Thumbnail>
   )
