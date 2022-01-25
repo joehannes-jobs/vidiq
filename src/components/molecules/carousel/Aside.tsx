@@ -1,18 +1,21 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext } from 'react';
 import { useQueryClient } from 'react-query';
 import { Instance as Context } from './Context';
 import { ImageDataset } from './DataSchema';
 
 const Aside: React.FC = () => {
-  const [isFavorite, setIsFavorite] = useState<boolean>(false);
-  const [{ currentImgSrc: src, currentImgTitle: title }, setImg] =
-    useContext(Context);
+  const [
+    { currentImgSrc: src, currentImgTitle: title, favorite: isFavorite },
+    setImg,
+  ] = useContext(Context);
   const queryClient = useQueryClient();
 
   const handleFavorite = () => {
-    const isFav = !isFavorite;
-
-    setIsFavorite(isFav);
+    setImg({
+      currentImgSrc: src,
+      currentImgTitle: title,
+      favorite: !isFavorite,
+    });
     queryClient.setQueryData<ImageDataset[]>(
       'images',
       (jsonImgData: ImageDataset[] | undefined) => {
@@ -20,7 +23,7 @@ const Aside: React.FC = () => {
           if (img.url === src) {
             return {
               ...img,
-              isFavorite: isFav,
+              favorite: !img.favorite,
             };
           }
           return img;
@@ -62,7 +65,13 @@ const Aside: React.FC = () => {
           <div className="card-actions justify-self-start justify-center items-center h-full landscape:hidden">
             <button
               className={`btn glass rounded-full text-7xl text-black h-auto p-7`}
-              onClick={() => setImg({ currentImgSrc: '', currentImgTitle: '' })}
+              onClick={() =>
+                setImg({
+                  currentImgSrc: '',
+                  currentImgTitle: '',
+                  favorite: false,
+                })
+              }
             >
               ✖
             </button>

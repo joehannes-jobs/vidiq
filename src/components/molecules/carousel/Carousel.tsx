@@ -5,9 +5,8 @@ import React, {
   useEffect,
   useState,
 } from 'react';
-import { useQueryClient } from 'react-query';
+import { QueryObserver, useQueryClient } from 'react-query';
 import { useIntersectionObserverRef } from 'rooks';
-
 import CarouselImage from './CarouselImage';
 import { API } from './const';
 import { Instance as CurrentImageContext } from './Context';
@@ -17,13 +16,16 @@ interface IProps {
   data?: ImageDataset[];
 }
 
-const Carousel: React.FC<IProps> = ({ data }: PropsWithChildren<IProps>) => {
+const Carousel: React.FC<IProps> = ({
+  data: cachedData,
+}: PropsWithChildren<IProps>) => {
   let renderedIntersectionRefElement = false;
   const queryClient = useQueryClient();
+  const queryObserver = new QueryObserver(queryClient, { queryKey: 'images' });
   const [triggerFetchImages, setTriggerFetchImages] = useState(
-    data?.length ? false : true
+    !cachedData?.length
   );
-  const [jsonImgData, setJsonImgData] = useState(data || []);
+  const [jsonImgData, setJsonImgData] = useState(cachedData ?? []);
   const [, setCurrentImageContext] = useContext(CurrentImageContext);
 
   const onGalleryScrollBottomProximity = (
@@ -38,13 +40,9 @@ const Carousel: React.FC<IProps> = ({ data }: PropsWithChildren<IProps>) => {
     onGalleryScrollBottomProximity
   );
 
-  const onTriggerFetchImages = () => {
-    if (!triggerFetchImages) {
-      return;
-    }
-
-    console.log(jsonImgData);
-    queryClient.fetchQuery('images', async () => {
+  const onTriggerFetchImages = async () => {
+    queryClient.invalidateQueries('images');
+    await queryClient.fetchQuery('images', async () => {
       let httpStatus: number;
 
       try {
@@ -84,6 +82,16 @@ const Carousel: React.FC<IProps> = ({ data }: PropsWithChildren<IProps>) => {
     }
   }, [triggerFetchImages]);
 
+  useEffect(() => {
+    const unsusbscribeImagesQuery = queryObserver.subscribe(result => {
+      if (result.isSuccess) {
+        setJsonImgData(result.data as ImageDataset[]);
+      }
+    });
+
+    return unsusbscribeImagesQuery;
+  }, []);
+
   return (
     <section
       className={`w-auto h-screen
@@ -107,6 +115,7 @@ const Carousel: React.FC<IProps> = ({ data }: PropsWithChildren<IProps>) => {
                   setCurrentImageContext({
                     currentImgSrc: dataset.url,
                     currentImgTitle: dataset.title,
+                    favorite: dataset.favorite,
                   })
                 }
                 title={dataset.title}
